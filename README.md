@@ -1,4 +1,4 @@
-# Asio http date-time client template
+# Asynchronious http client template
 
 ## Propose
 

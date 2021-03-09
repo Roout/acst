@@ -27,7 +27,7 @@ public:
                 boost::system::error_code error; 
                 std::cerr << "Server accepted connection on endpoint: " << m_socket->remote_endpoint(error) << std::endl; 
                 m_sessions.push_back(std::make_shared<Session>(m_context, std::move(*m_socket)));
-
+                m_sessions.back()->ReadRequest();
                 // wait for the new connections again
                 this->Start();
             }

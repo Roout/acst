@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <optional>
+#include <functional>
+#include <string_view>
 
 #include <boost/asio.hpp>
 
@@ -23,7 +25,6 @@ public:
         , m_socket { std::move(socket) }
         , m_strand { *context }
     {
-        this->ReadRequest();
     }
 
     ~Session() {
@@ -31,19 +32,15 @@ public:
     }
 
     void ReadRequest() {
-        boost::asio::async_read_until(
-            m_socket,
-            m_inbox,
-            "\r\n\r\n",
-            boost::asio::bind_executor(
-                m_strand, 
-                std::bind(&Session::ReadHandler, 
-                    this->shared_from_this(), 
-                    std::placeholders::_1, 
-                    std::placeholders::_2
-                )
+        auto executor = boost::asio::bind_executor(
+            m_strand, 
+            std::bind(&Session::ReadHandler, 
+                this->shared_from_this(), 
+                std::placeholders::_1, 
+                std::placeholders::_2
             )
         );
+        boost::asio::async_read_until(m_socket, m_inbox, DELIMITER.data(), executor);
     }
 
     void WriteResponse(std::string text) {
@@ -62,11 +59,13 @@ private:
             const auto data { m_inbox.data() };
             std::string received {
                 boost::asio::buffers_begin(data), 
-                boost::asio::buffers_begin(data) + bytes
+                boost::asio::buffers_begin(data) + bytes - DELIMITER.size()
             };
             m_inbox.consume(bytes);
             
-            this->WriteResponse(std::string("You said: ") + std::move(received));
+            std::cerr << "Received: " << received << std::endl;
+
+            this->WriteResponse(std::string("You said: ") + std::move(received) + std::string(DELIMITER));
             // continue to read incoming data
             this->ReadRequest();
         } 
@@ -128,6 +127,8 @@ private:
     SwitchBuffer m_outbox;
 
     bool m_idle { true };
+
+    static constexpr std::string_view DELIMITER { "\r\n\r\n" };
 
 };
 
