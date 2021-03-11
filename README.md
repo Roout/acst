@@ -1,6 +1,6 @@
 # Asynchronious client-server template
 
-## Propose
+## Purpose
 
 1. To be used as template for testing different configurations
 
