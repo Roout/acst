@@ -1,8 +1,8 @@
 # Asynchronious client-server template
 
-## Propose
+## Purpose
 
-1. To be used as template for simple testing of different configurations
+1. To be used as template for testing different configurations
 
 2. Test interaction of multiply sockets (from client) with one server.
 This is just a simplified test model for highload cup.
