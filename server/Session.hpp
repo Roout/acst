@@ -6,9 +6,11 @@
 #include <functional>
 #include <string_view>
 
+#include <boost/format.hpp>
 #include <boost/asio.hpp>
 
 #include "../common/SwitchBuffer.hpp"
+#include "../common/Logger.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -17,11 +19,12 @@ class Session
 {
 public:
 
-    Session(
-        std::shared_ptr<boost::asio::io_context> context
+    Session(size_t id
+        , std::shared_ptr<boost::asio::io_context> context
         , tcp::socket && socket
     )
-        : m_context { context }
+        : m_log { (boost::format("session_%1%.txt") % id).str().c_str() }
+        , m_context { context }
         , m_socket { std::move(socket) }
         , m_strand { *context }
     {
@@ -63,9 +66,9 @@ private:
             };
             m_inbox.consume(bytes);
             
-            std::cerr << "Received: " << received << std::endl;
+            m_log.Write(LogType::info, "Received:", received, '\n');
 
-            this->WriteResponse(std::string("You said: ") + std::move(received) + std::string(DELIMITER));
+            this->WriteResponse((boost::format("You said: %1%%2%") % std::move(received) % DELIMITER).str());
             // continue to read incoming data
             this->ReadRequest();
         } 
@@ -107,12 +110,15 @@ private:
 
     void Close() {
         // TODO: check error
+        m_log.Write(LogType::info, "Session closed\n");
         boost::system::error_code error;
         m_socket.shutdown(tcp::socket::shutdown_both, error);
         m_socket.close(error);
     }
 
 private:
+    Log m_log;
+
     std::shared_ptr<boost::asio::io_context> m_context;
 
     tcp::socket m_socket;

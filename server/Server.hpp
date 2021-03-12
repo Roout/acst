@@ -7,13 +7,20 @@
 
 #include <boost/asio.hpp>
 #include "Session.hpp"
+#include "../common/Logger.hpp"
 
 class Server {
 public:
     Server(std::shared_ptr<boost::asio::io_context> context, int port) 
         : m_context { context }
         , m_acceptor{ *context, tcp::endpoint(tcp::v4(), port) }
+        , m_log { "server.txt" }
     {
+        std::cout << "Start server...\n";
+    }
+
+    ~Server() {
+        std::cout << "Close server...\n";
     }
     
     void Start() {
@@ -25,14 +32,18 @@ public:
         m_acceptor.async_accept(*m_socket, [this](const boost::system::error_code& code) {
             if (!code) {
                 boost::system::error_code error; 
-                std::cerr << "Server accepted connection on endpoint: " << m_socket->remote_endpoint(error) << std::endl; 
-                m_sessions.push_back(std::make_shared<Session>(m_context, std::move(*m_socket)));
+                m_log.Write(LogType::info,
+                    "Server accepted connection on endpoint:", m_socket->remote_endpoint(error), '\n'
+                ); 
+                m_sessions.push_back(std::make_shared<Session>(m_sessionId++, m_context, std::move(*m_socket)));
                 m_sessions.back()->ReadRequest();
                 // wait for the new connections again
                 this->Start();
             }
             else {
-                std::cerr << "Watafuck!\n";
+                m_log.Write(LogType::error,
+                    "Failed to accept connection with error:", code.message(), '\n'
+                ); 
             }
         });
     }
@@ -54,6 +65,10 @@ private:
     std::optional<tcp::socket> m_socket;
 
     std::vector<std::shared_ptr<Session>> m_sessions;
+
+    Log m_log;
+
+    size_t m_sessionId { 0 };
 };
 
 #endif // SERVER_HPP__
