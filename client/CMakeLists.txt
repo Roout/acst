@@ -23,7 +23,7 @@ list(APPEND sources
 
 add_executable (${This} ${sources} ${headers})
 
-add_definitions(-DBOOST_DATE_TIME_NO_LIB -DBOOST_REGEX_NO_LIB)
+add_definitions(-DBOOST_DATE_TIME_NO_LIB -DBOOST_REGEX_NO_LIB -D_WIN32_WINNT=0x0601)
 
 find_package(Boost REQUIRED)
 
