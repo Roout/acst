@@ -11,7 +11,7 @@ This is just a simplified test model for highload cup.
 
 - CMake 3.16+
 - gcc 9.2+
-- boost (used 1.72.0 but can work with earlier versions)
+- boost.asio, boost.format (used 1.72.0 but can work with earlier versions)
 
 ## Result
 
@@ -31,10 +31,10 @@ The log files in folder with asio-client executable:
 - client_3.txt
 
 Example of **server.txt** content:
-> 93734683 --info:  Server accepted connection on endpoint: 127.0.0.1:60554
-> 93734684 --info:  Server accepted connection on endpoint: 127.0.0.1:60555
-> 93734685 --info:  Server accepted connection on endpoint: 127.0.0.1:60556
-> 93734685 --info:  Server accepted connection on endpoint: 127.0.0.1:60557
+> 93734683 --info:  Server accepted connection on endpoint: 127.0.0.1:60554  
+> 93734684 --info:  Server accepted connection on endpoint: 127.0.0.1:60555  
+> 93734685 --info:  Server accepted connection on endpoint: 127.0.0.1:60556  
+> 93734685 --info:  Server accepted connection on endpoint: 127.0.0.1:60557  
 
 Example of **session_0.txt** content:
 > 93734689 --info:  Received: endpoint=127.0.0.1:60554 with id=0 joined.
