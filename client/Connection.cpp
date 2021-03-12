@@ -14,7 +14,7 @@ Connection::Connection(size_t id
     , std::shared_ptr<boost::asio::io_context> context
 )
     : m_id { id }
-    , m_log { (boost::format("log_%1%.txt") % id).str().c_str() }
+    , m_log { (boost::format("client_%1%.txt") % id).str().c_str() }
     , m_client { client }
     , m_context { context }
     , m_socket { *context }
