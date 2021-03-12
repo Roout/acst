@@ -9,10 +9,16 @@ set(headers)
 set(sources)
 
 list(APPEND headers
+	"../common/Logger.hpp"
+	"../common/SwitchBuffer.hpp"
+	"Client.hpp"
+	"Connection.hpp"
 )
-
+	
 list(APPEND sources 
-  "main.cpp"
+	"main.cpp"
+	"Client.cpp"
+	"Connection.cpp"
 )
 
 add_executable (${This} ${sources} ${headers})
