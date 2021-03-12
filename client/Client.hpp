@@ -2,7 +2,7 @@
 #define CLIENT_HPP__
 
 #include <memory>
-#include <algorithm>
+#include <iostream>
 #include <mutex>
 
 #include <boost/asio.hpp>
@@ -16,6 +16,11 @@ public:
     Client(std::shared_ptr<boost::asio::io_context> context)
         : m_context { context }
     {
+        std::cout << "Client is starting...\n";
+    }
+
+    Client() {
+        std::cout << "Client ends...\n";
     }
 
     void Connect(const char *address, int port);
