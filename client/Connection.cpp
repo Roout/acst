@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <algorithm>
-#include <iostream>
 
 #include <boost/format.hpp>
 
@@ -75,8 +74,6 @@ void Connection::OnRead(
         m_inbox.consume(bytes);
         
         boost::system::error_code error; 
-        std::cout << m_socket.remote_endpoint(error) << ": " << received << '\n'; 
-
         m_log.Write(LogType::info, 
             m_socket.remote_endpoint(error), ":", received, '\n' 
         );
