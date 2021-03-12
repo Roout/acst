@@ -12,6 +12,7 @@ list(APPEND headers
 	"Session.hpp"
 	"Server.hpp"
 	"../common/SwitchBuffer.hpp"
+	"../common/Logger.hpp"
 )
 
 list(APPEND sources 
