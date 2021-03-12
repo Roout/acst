@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <iostream>
 
 #include <boost/format.hpp>
 
@@ -43,6 +44,52 @@ void Connection::Write(std::string text) {
     } 
 }
 
+void Connection::Read() {
+    boost::asio::async_read_until(
+        m_socket
+        , m_inbox
+        , DELIMITER.data()
+        , std::bind(&Connection::OnRead, 
+            this->shared_from_this(), 
+            std::placeholders::_1, 
+            std::placeholders::_2
+        )
+    );
+}
+
+void Connection::OnRead(
+    const boost::system::error_code& error
+    , size_t bytes
+) {
+    if(!error) {
+        m_log.Write(LogType::info, 
+            "Client just recive:", bytes, "bytes.\n"
+        );
+        
+        const auto data { m_inbox.data() }; // asio::streambuf::const_buffers_type
+        std::string received {
+            boost::asio::buffers_begin(data), 
+            boost::asio::buffers_begin(data) + bytes - DELIMITER.size()
+        };
+        
+        m_inbox.consume(bytes);
+        
+        boost::system::error_code error; 
+        std::cout << m_socket.remote_endpoint(error) << ": " << received << '\n'; 
+
+        m_log.Write(LogType::info, 
+            m_socket.remote_endpoint(error), ":", received, '\n' 
+        );
+        this->Read();
+    } 
+    else {
+        m_log.Write(LogType::error, 
+            "Client", m_id, "failed to read with error: ", error.message(), "\n"
+        );
+        this->Shutdown();
+    }
+}
+
 void Connection::WriteBuffer() {
     m_isIdle = false;
     m_outbox.SwapBuffers();
@@ -80,6 +127,7 @@ void Connection::OnConnect(const boost::system::error_code& error) {
             % m_id 
             % DELIMITER;
         this->Write(text.str());
+        this->Read();
     }
 }
 

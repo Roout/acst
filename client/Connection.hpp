@@ -22,8 +22,10 @@ public:
 
     void Start(const char *address, int port);
 
-    // access to m_outbox must be synchronious
+    // not thread-safe
     void Write(std::string text);
+
+    void Read();
 
 private:
 
@@ -32,6 +34,8 @@ private:
     void OnConnect(const boost::system::error_code& error);
 
     void OnWrite(const boost::system::error_code& error, size_t bytes);
+
+    void OnRead(const boost::system::error_code& error, size_t bytes);
 
     void Shutdown();
 
@@ -46,6 +50,7 @@ private:
     boost::asio::ip::tcp::socket m_socket;
     boost::asio::io_context::strand m_strand;
     
+    boost::asio::streambuf m_inbox;
     SwitchBuffer m_outbox;
     bool m_isIdle { true };
 };
