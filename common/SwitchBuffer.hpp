@@ -28,7 +28,7 @@ public:
         m_buffers[m_activeBuffer].clear();
         m_activeBuffer ^= 1;
 
-        for(const auto& buf: m_buffers[m_activeBuffer]) {
+        for (const auto& buf: m_buffers[m_activeBuffer]) {
             m_bufferSequence.emplace_back(boost::asio::const_buffer(buf.c_str(), buf.size()));
         }
     }

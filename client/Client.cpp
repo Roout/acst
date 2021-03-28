@@ -18,7 +18,7 @@ void Client::Erase(Connection * connection) {
             return element.get() == connection;
         }
     );
-    if(it != m_connections.end()) {
+    if (it != m_connections.end()) {
         std::swap(*it, m_connections.back());
         m_connections.pop_back();
     }

@@ -24,7 +24,7 @@ Connection::Connection(size_t id
 void Connection::Start(const char *address, int port) {
     boost::asio::ip::tcp::resolver resolver(*m_context);
     const auto endpoints = resolver.resolve(address, std::to_string(port));
-    if(endpoints.empty()) {
+    if (endpoints.empty()) {
         this->Shutdown();
     }
     else {
@@ -38,7 +38,7 @@ void Connection::Start(const char *address, int port) {
 
 void Connection::Write(std::string text) {
     m_outbox.Enque(std::move(text));
-    if(m_isIdle) {
+    if (m_isIdle) {
         this->WriteBuffer();
     } 
 }
@@ -60,7 +60,7 @@ void Connection::OnRead(
     const boost::system::error_code& error
     , size_t bytes
 ) {
-    if(!error) {
+    if (!error) {
         m_log.Write(LogType::info, 
             "Client just recive:", bytes, "bytes.\n"
         );
@@ -105,7 +105,7 @@ void Connection::WriteBuffer() {
 }
 
 void Connection::OnConnect(const boost::system::error_code& error) {
-    if(error) {
+    if (error) {
         m_log.Write(LogType::error, 
             "Client", m_id , "failed to connect with error: ", error.message(), "\n" 
         );
@@ -129,7 +129,7 @@ void Connection::OnConnect(const boost::system::error_code& error) {
 }
 
 void Connection::OnWrite(const boost::system::error_code& error, size_t bytes) {
-    if(error) {
+    if (error) {
         m_isIdle = true;
         m_log.Write(LogType::error, 
             "Client has error on writting: ", error.message(), '\n'
@@ -140,7 +140,7 @@ void Connection::OnWrite(const boost::system::error_code& error, size_t bytes) {
         m_log.Write(LogType::info, 
             "Client", m_id, "just sent: ", bytes, " bytes\n"
         );
-        if(m_outbox.GetQueueSize()) {
+        if (m_outbox.GetQueueSize()) {
             this->WriteBuffer();
         } 
         else {
@@ -151,7 +151,7 @@ void Connection::OnWrite(const boost::system::error_code& error, size_t bytes) {
 }
 
 void Connection::Shutdown() {
-    if(auto locked = m_client.lock(); locked) {
+    if (auto locked = m_client.lock(); locked) {
         locked->Erase(this);
     }
     boost::system::error_code error;

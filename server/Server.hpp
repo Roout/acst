@@ -35,8 +35,7 @@ public:
                 m_log.Write(LogType::info,
                     "Server accepted connection on endpoint:", m_socket->remote_endpoint(error), '\n'
                 ); 
-                m_sessions.push_back(std::make_shared<Session>(m_sessionId++, m_context, std::move(*m_socket)));
-                m_sessions.back()->ReadRequest();
+                std::make_shared<Session>(m_sessionId++, m_context, std::move(*m_socket))->ReadRequest();
                 // wait for the new connections again
                 this->Start();
             }
@@ -59,12 +58,8 @@ public:
 private:
 
     std::shared_ptr<boost::asio::io_context> m_context;
-
     tcp::acceptor m_acceptor;
-
     std::optional<tcp::socket> m_socket;
-
-    std::vector<std::shared_ptr<Session>> m_sessions;
 
     Log m_log;
 

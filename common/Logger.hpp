@@ -22,7 +22,7 @@ public:
 
     ~Log() {
         std::lock_guard<std::mutex> lock(m_mutex);
-        if(m_os.is_open()) {
+        if (m_os.is_open()) {
             m_os.close();
         }
     }
@@ -36,7 +36,7 @@ public:
 
         std::lock_guard<std::mutex> lock(m_mutex);
         m_os << ms.count() << ' ';
-        switch(type) {
+        switch (type) {
             case LogType::info: {
                 m_os << "--info: ";
             } break;

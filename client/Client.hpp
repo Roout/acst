@@ -19,7 +19,7 @@ public:
         std::cout << "Client is starting...\n";
     }
 
-    Client() {
+    ~Client() {
         std::cout << "Client ends...\n";
     }
 
