@@ -94,8 +94,8 @@ private:
     }
 
     void WriteHandler(const boost::system::error_code& error, size_t bytes) {
-        if(!error) {
-            if(m_outbox.GetQueueSize()) {
+        if (!error) {
+            if (m_outbox.GetQueueSize()) {
                 // we need to Write other data
                 this->Write();
             } 
@@ -119,17 +119,20 @@ private:
 private:
     Log m_log;
 
+    /**
+     * Stuff with boost 
+     */
     std::shared_ptr<boost::asio::io_context> m_context;
-
     tcp::socket m_socket;
-
     boost::asio::io_context::strand m_strand;
 
     /**
-     * A buffer used for incoming information.
+     * A buffer used for incoming information (read).
      */
     boost::asio::streambuf m_inbox;
-
+    /**
+     * A buffer used for outgoing operations (write).
+     */
     SwitchBuffer m_outbox;
 
     bool m_idle { true };

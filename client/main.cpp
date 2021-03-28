@@ -9,15 +9,14 @@ int main() {
     std::shared_ptr<Client> client = std::make_shared<Client>(context);
 
     // add some work
-    client->Connect(ADDRESS, PORT);
-    client->Connect(ADDRESS, PORT);
-    client->Connect(ADDRESS, PORT);
-    client->Connect(ADDRESS, PORT);
-
+    for (int i = 0; i < 4; i++) {
+        client->Connect(ADDRESS, PORT);
+    }
+    
     std::vector<std::thread> threads;
-    for(size_t i = 0; i < 4; i++) {
+    for (size_t i = 0; i < 4; i++) {
         threads.emplace_back([context](){
-            for(;;) {
+            for (;;) {
                 try {
                     context->run();
                     break;
@@ -29,7 +28,7 @@ int main() {
         });
     }
 
-    for(auto&&t: threads) {
+    for (auto&&t: threads) {
         t.join();
     }
 

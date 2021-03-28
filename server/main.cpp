@@ -14,7 +14,7 @@ int main() {
     server.Start();
 
     std::vector<std::thread> ts;
-    for(int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
         ts.emplace_back([context]() {
             for (;;) {
                 try {
@@ -28,7 +28,7 @@ int main() {
         });
     }
     
-    for(auto& t: ts) t.join();
+    for (auto& t: ts) t.join();
 
     return 0;
 }
