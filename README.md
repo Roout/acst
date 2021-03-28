@@ -4,14 +4,19 @@
 
 1. To be used as template for testing different configurations
 
-2. Test interaction of multiply sockets (from client) with one server.
-This is just a simplified test model for highload cup.
+2. Test interaction of multiply sockets (from single client) with one server.
 
 ## Prerequisites
 
 - CMake 3.16+
-- gcc 9.2+
+- c++17 standard
 - boost.asio, boost.format (used 1.72.0 but can work with earlier versions)
+
+## Consist of
+
+- client
+- server
+- mock (implementation of mock async read/write stream. Planning to use for tests)
 
 ## Result
 
